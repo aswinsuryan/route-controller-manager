@@ -19,7 +19,8 @@ import (
 	clientgotesting "k8s.io/client-go/testing"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
-	"k8s.io/kubernetes/pkg/registry/core/service/ipallocator"
+
+	"github.com/openshift/route-controller-manager/pkg/utils/ipallocator"
 )
 
 const namespace = "ns"

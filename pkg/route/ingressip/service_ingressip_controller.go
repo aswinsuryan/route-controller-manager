@@ -24,7 +24,8 @@ import (
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/record"
 	"k8s.io/client-go/util/workqueue"
-	"k8s.io/kubernetes/pkg/registry/core/service/ipallocator"
+
+	"github.com/openshift/route-controller-manager/pkg/utils/ipallocator"
 )
 
 const (
