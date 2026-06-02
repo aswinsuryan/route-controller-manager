@@ -29,9 +29,6 @@ github.com/coreos/go-systemd/v22/journal
 # github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 ## explicit
 github.com/davecgh/go-spew/spew
-# github.com/distribution/reference v0.6.0
-## explicit; go 1.20
-github.com/distribution/reference
 # github.com/emicklei/go-restful/v3 v3.12.2
 ## explicit; go 1.13
 github.com/emicklei/go-restful/v3
@@ -158,9 +155,6 @@ github.com/modern-go/reflect2
 # github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822
 ## explicit
 github.com/munnerz/goautoneg
-# github.com/opencontainers/go-digest v1.0.0
-## explicit; go 1.13
-github.com/opencontainers/go-digest
 # github.com/openshift/api v0.0.0-20251214014457-bfa868a22401
 ## explicit; go 1.24.0
 github.com/openshift/api/build/v1
@@ -245,9 +239,6 @@ github.com/prometheus/common/model
 github.com/prometheus/procfs
 github.com/prometheus/procfs/internal/fs
 github.com/prometheus/procfs/internal/util
-# github.com/robfig/cron/v3 v3.0.1
-## explicit; go 1.12
-github.com/robfig/cron/v3
 # github.com/sirupsen/logrus v1.9.3
 ## explicit; go 1.13
 github.com/sirupsen/logrus
@@ -1225,7 +1216,6 @@ k8s.io/client-go/util/consistencydetector
 k8s.io/client-go/util/flowcontrol
 k8s.io/client-go/util/homedir
 k8s.io/client-go/util/keyutil
-k8s.io/client-go/util/retry
 k8s.io/client-go/util/watchlist
 k8s.io/client-go/util/workqueue
 # k8s.io/component-base v0.35.0
@@ -1257,12 +1247,6 @@ k8s.io/component-base/tracing
 k8s.io/component-base/tracing/api/v1
 k8s.io/component-base/version
 k8s.io/component-base/zpages/features
-# k8s.io/component-helpers v0.35.0
-## explicit; go 1.25.0
-k8s.io/component-helpers/node/util/sysctl
-k8s.io/component-helpers/resource
-k8s.io/component-helpers/scheduling/corev1
-k8s.io/component-helpers/scheduling/corev1/nodeaffinity
 # k8s.io/controller-manager v0.35.0
 ## explicit; go 1.25.0
 k8s.io/controller-manager/app
@@ -1308,36 +1292,13 @@ k8s.io/kube-openapi/pkg/validation/errors
 k8s.io/kube-openapi/pkg/validation/spec
 k8s.io/kube-openapi/pkg/validation/strfmt
 k8s.io/kube-openapi/pkg/validation/strfmt/bson
-# k8s.io/kubelet v0.35.0
-## explicit; go 1.25.0
-k8s.io/kubelet/pkg/apis
 # k8s.io/kubernetes v1.35.0
 ## explicit; go 1.25.0
-k8s.io/kubernetes/pkg/api/legacyscheme
-k8s.io/kubernetes/pkg/api/service
 k8s.io/kubernetes/pkg/api/servicecidr
-k8s.io/kubernetes/pkg/api/v1/pod
-k8s.io/kubernetes/pkg/api/v1/service
-k8s.io/kubernetes/pkg/apis/apps
-k8s.io/kubernetes/pkg/apis/autoscaling
-k8s.io/kubernetes/pkg/apis/certificates
 k8s.io/kubernetes/pkg/apis/core
-k8s.io/kubernetes/pkg/apis/core/helper
-k8s.io/kubernetes/pkg/apis/core/helper/qos
-k8s.io/kubernetes/pkg/apis/core/install
-k8s.io/kubernetes/pkg/apis/core/pods
-k8s.io/kubernetes/pkg/apis/core/v1
-k8s.io/kubernetes/pkg/apis/core/v1/helper
-k8s.io/kubernetes/pkg/apis/core/validation
-k8s.io/kubernetes/pkg/capabilities
-k8s.io/kubernetes/pkg/controller
 k8s.io/kubernetes/pkg/features
-k8s.io/kubernetes/pkg/fieldpath
 k8s.io/kubernetes/pkg/registry/core/service/allocator
 k8s.io/kubernetes/pkg/registry/core/service/ipallocator
-k8s.io/kubernetes/pkg/util/hash
-k8s.io/kubernetes/pkg/util/parsers
-k8s.io/kubernetes/pkg/util/taints
 # k8s.io/utils v0.0.0-20251002143259-bc988d571ff4
 ## explicit; go 1.18
 k8s.io/utils/buffer
