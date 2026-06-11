@@ -19,8 +19,8 @@ import (
 	clientgotesting "k8s.io/client-go/testing"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
-	"k8s.io/kubernetes/pkg/controller"
-	"k8s.io/kubernetes/pkg/registry/core/service/ipallocator"
+
+	"github.com/openshift/route-controller-manager/pkg/utils/ipallocator"
 )
 
 const namespace = "ns"
@@ -33,7 +33,7 @@ func newController(t *testing.T, client *fake.Clientset, stopCh <-chan struct{})
 	if client == nil {
 		client = fake.NewSimpleClientset()
 	}
-	informerFactory := informers.NewSharedInformerFactory(client, controller.NoResyncPeriodFunc())
+	informerFactory := informers.NewSharedInformerFactory(client, 0)
 	controller := NewIngressIPController(
 		informerFactory.Core().V1().Services().Informer(),
 		client, ipNet, 10*time.Minute,
