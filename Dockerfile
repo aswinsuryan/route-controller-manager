@@ -1,6 +1,11 @@
 FROM registry.ci.openshift.org/ocp/builder:rhel-9-golang-1.26-openshift-5.0 AS builder
 WORKDIR /go/src/github.com/openshift/route-controller-manager
-COPY . .
+COPY Makefile ./
+COPY go.mod go.sum ./
+COPY .git/ .git/
+COPY cmd/ cmd/
+COPY pkg/ pkg/
+COPY vendor/ vendor/
 RUN make build --warn-undefined-variables
 
 FROM registry.ci.openshift.org/ocp/5.0:base-rhel9
