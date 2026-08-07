@@ -76,24 +76,30 @@ func (c *Controller) Collect(ch chan<- prometheus.Metric) {
 		return
 	}
 
+	// Cache ingressManaged results keyed by "namespace/name" to avoid
+	// redundant lister + ingressclass lookups for ingresses shared by many routes.
+	managedCache := make(map[string]bool, len(ingressInstances))
+
 	for _, routeInstance := range routeInstances {
 		labelVal := 0
-		if owner, have := hasIngressOwnerRef(routeInstance.OwnerReferences); have {
-			for _, ingressInstance := range ingressInstances {
-				ingress, err := c.ingressLister.Ingresses(ingressInstance.Namespace).Get(ingressInstance.Name)
-				if err != nil || ingress == nil {
-					continue
-				}
-				if ingress.Name == owner && ingress.Namespace == routeInstance.Namespace {
-					managed, err := c.ingressManaged(ingress)
+		if ownerName, have := hasIngressOwnerRef(routeInstance.OwnerReferences); have {
+			// Owner references are namespace-scoped, so the owning ingress
+			// is always in the same namespace as the route.
+			cacheKey := routeInstance.Namespace + "/" + ownerName
+			managed, cached := managedCache[cacheKey]
+			if !cached {
+				ingress, err := c.ingressLister.Ingresses(routeInstance.Namespace).Get(ownerName)
+				if err == nil && ingress != nil {
+					managed, err = c.ingressManaged(ingress)
 					if err != nil {
 						utilruntime.HandleError(err)
-						return
+						continue
 					}
-					if !managed {
-						labelVal = 1
-					}
+					managedCache[cacheKey] = managed
 				}
+			}
+			if !managed {
+				labelVal = 1
 			}
 		}
 		unmanagedRoutes.WithLabelValues(routeInstance.Name, routeInstance.Namespace, routeInstance.Spec.Host).Set(float64(labelVal))
