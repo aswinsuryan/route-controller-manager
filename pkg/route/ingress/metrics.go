@@ -6,6 +6,7 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/labels"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/apimachinery/pkg/util/sets"
 
 	"github.com/openshift/route-controller-manager/pkg/routecontroller"
 )
@@ -87,6 +88,7 @@ func (c *Controller) Collect(ch chan<- prometheus.Metric) {
 	// redundant lister + ingressclass lookups for ingresses shared by many routes.
 	managedCache := make(map[string]managedResult, len(ingressInstances))
 
+	currentUnmanagedRoutes := sets.New[routeMetricLabels]()
 	for _, routeInstance := range routeInstances {
 		labelVal := 0
 		if ownerName, have := hasIngressOwnerRef(routeInstance.OwnerReferences); have {
@@ -127,16 +129,37 @@ func (c *Controller) Collect(ch chan<- prometheus.Metric) {
 			}
 		}
 		unmanagedRoutes.WithLabelValues(routeInstance.Name, routeInstance.Namespace, routeInstance.Spec.Host).Set(float64(labelVal))
+		if labelVal > 0 {
+			currentUnmanagedRoutes.Insert(routeMetricLabels{
+				name:      routeInstance.Name,
+				namespace: routeInstance.Namespace,
+				host:      routeInstance.Spec.Host,
+			})
+		}
 	}
+	c.resetUnusedUnmanagedRoutesMetrics(currentUnmanagedRoutes)
 
 	unmanagedRoutes.Collect(ch)
 }
 
-// ResetIngressMetrics clears metrics for the specified ingress by setting its
+// resetIngressMetrics clears metrics for the specified ingress by setting its
 // series data to 0.  This is appropriate to do when an ingress object is
 // deleted to prevent stale metrics from triggering alerts.  As Collect only
 // updates metrics for ingresses that exist at the time when Collect is called,
 // it does not clear metrics for deleted routes.
-func (c *Controller) ResetIngressMetrics(namespace, ingressName string) {
+func (c *Controller) resetIngressMetrics(namespace, ingressName string) {
 	ingressesWithoutClassName.WithLabelValues(ingressName, namespace).Set(0.0)
+}
+
+// resetUnusedUnmanagedRoutesMetrics zeroes the metric for routes that were flagged
+// unmanaged in a previous Collect call but aren't in the current flaggedRoutes set,
+// e.g. because the route was deleted or its owner became managed again.
+func (c *Controller) resetUnusedUnmanagedRoutesMetrics(currentUnmanagedRoutes sets.Set[routeMetricLabels]) {
+	c.flaggedUnmanagedRoutesLock.Lock()
+	defer c.flaggedUnmanagedRoutesLock.Unlock()
+
+	for route := range c.flaggedUnmanagedRoutes.Difference(currentUnmanagedRoutes) {
+		unmanagedRoutes.WithLabelValues(route.name, route.namespace, route.host).Set(0.0)
+	}
+	c.flaggedUnmanagedRoutes = currentUnmanagedRoutes
 }
